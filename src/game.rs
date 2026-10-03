@@ -242,8 +242,11 @@ impl MainBoard {
         Self::default()
     }
 
-    pub fn generate_moves(&self, move_list: &mut MoveList) {
-        move_list.clear();
+    pub fn generate_moves(&self) -> MoveList {
+        let mut move_list = MoveList::new();
+        if self.main_board.state != BoardState::InPlay {
+            return move_list;
+        }
         for main_cell in 0..9 {
             if let Some(board_to_move) = self.board_to_move
                 && main_cell != board_to_move
@@ -259,6 +262,8 @@ impl MainBoard {
                 move_list.push(Move::new(main_cell, local_cell));
             }
         }
+
+        move_list
     }
 
     pub fn make_move(&mut self, mv: Move) {
@@ -267,8 +272,14 @@ impl MainBoard {
         self.local_boards[main_cell as usize].set(local_cell, self.side_to_move);
         self.local_boards[main_cell as usize].set_state();
         match self.local_boards[main_cell as usize].state {
-            BoardState::Won(Player::X) => self.main_board.set(main_cell, Player::X),
-            BoardState::Won(Player::O) => self.main_board.set(main_cell, Player::O),
+            BoardState::Won(Player::X) => {
+                self.main_board.set(main_cell, Player::X);
+                self.main_board.set_state();
+            }
+            BoardState::Won(Player::O) => {
+                self.main_board.set(main_cell, Player::O);
+                self.main_board.set_state();
+            }
             _ => (),
         }
 
@@ -321,8 +332,7 @@ mod tests {
     fn move_list() {
         let mut main_board = MainBoard::new();
         main_board.make_move(Move::new(4, 6));
-        let mut move_list = MoveList::new();
-        main_board.generate_moves(&mut move_list);
+        let move_list = main_board.generate_moves();
         println!("{:?}", move_list)
     }
 
@@ -338,8 +348,7 @@ mod tests {
     #[test]
     fn perft_verbose() {
         let main_board = MainBoard::new();
-        let mut move_list = MoveList::new();
-        main_board.generate_moves(&mut move_list);
+        let move_list = main_board.generate_moves();
         for mv in move_list {
             let mut move_board = main_board.clone();
             move_board.make_move(mv);
@@ -353,8 +362,7 @@ mod tests {
             1
         } else {
             let mut nodes = 0;
-            let mut move_list = MoveList::new();
-            main_board.generate_moves(&mut move_list);
+            let move_list = main_board.generate_moves();
             for mv in move_list {
                 let mut move_board = main_board.clone();
                 move_board.make_move(mv);

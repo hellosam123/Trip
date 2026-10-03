@@ -1,4 +1,4 @@
-use crate::game::{MainBoard, Move, MoveList};
+use crate::game::{MainBoard, Move};
 
 mod constants;
 mod game;
@@ -11,7 +11,4 @@ fn main() {
     board.make_move(Move::new(4, 8));
     board.make_move(Move::new(4, 3));
     println!("{}", board);
-    let mut move_list = MoveList::new();
-    board.generate_moves(&mut move_list);
-    println!("{:?}", move_list);
 }
