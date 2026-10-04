@@ -1,20 +1,20 @@
 use std::ops::{BitAnd, BitOr, Not};
 
-use crate::constants;
+use crate::constants::{self, convert_global_coordinates};
 
 #[derive(Clone, Debug)]
 pub struct MainBoard {
-    main_board: Board,
-    local_boards: [Board; 9],
-    side_to_move: Player,
-    board_to_move: Option<u8>,
+    pub main_board: Board,
+    pub local_boards: [Board; 9],
+    pub side_to_move: Player,
+    pub board_to_move: Option<u8>,
 }
 
 // another alternative is to store both x and o together
 #[derive(Clone, Copy, Debug)]
 pub struct Board {
-    x: Bitboard,
-    o: Bitboard,
+    pub x: Bitboard,
+    pub o: Bitboard,
     pub state: BoardState,
 }
 

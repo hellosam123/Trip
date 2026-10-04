@@ -2,6 +2,7 @@ use crate::game::{MainBoard, Move};
 
 mod constants;
 mod game;
+mod net;
 
 fn main() {
     let mut board = MainBoard::new();
